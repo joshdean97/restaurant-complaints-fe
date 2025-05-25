@@ -13,7 +13,13 @@ export default function ComplaintsList({ complaints }) {
       field: 'complaint_date', 
       headerName: 'Date', 
       width: 180,
-      valueFormatter: (params) => format(new Date(params.value), 'PPpp'),
+      valueFormatter: (params) => {
+        try {
+          return params.value ? format(new Date(params.value), 'PPpp') : '';
+        } catch (error) {
+          return 'Invalid date';
+        }
+      },
     },
     { field: 'status', headerName: 'Status', width: 130 },
   ];
