@@ -40,7 +40,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/complaints');
+        const response = await fetch('http://0.0.0.0:8000/api/complaints');
         const result = await response.json();
         setData(result);
       } catch (err) {
