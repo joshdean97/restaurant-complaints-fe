@@ -1,0 +1,750 @@
+openapi: 3.0.3
+info:
+  title: Restaurant Complaint Management API
+  description: |
+    A comprehensive REST API for managing and analyzing restaurant complaints with advanced NLP-powered severity assessment.
+    
+    ## Key Features
+    - Automated complaint severity analysis using AI
+    - Real-time complaint tracking and management
+    - Customer dashboard with analytics
+    - Comprehensive complaint data collection
+    
+    ## Authentication
+    Currently, this API does not require authentication. All endpoints are publicly accessible.
+    
+    ## Base URL
+    - Development: `http://localhost:5000`
+    - Production: `https://your-app.replit.app`
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+  - url: http://localhost:8000
+    description: Alternative development server
+
+paths:
+  /:
+    get:
+      summary: API Status Check
+      description: Simple endpoint to verify the API is running
+      responses:
+        '200':
+          description: API is running
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Welcome to the Restaurant Complaint Management API! The API is running and ready to handle requests."
+
+  /health:
+    get:
+      summary: Health Check
+      description: Detailed health check endpoint with API status information
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  message:
+                    type: string
+                    example: "API is running properly"
+                  version:
+                    type: string
+                    example: "1.0.0"
+
+  /api/complaints:
+    get:
+      summary: Get All Complaints
+      description: Retrieve all complaints from the database
+      responses:
+        '200':
+          description: List of all complaints
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  count:
+                    type: integer
+                    example: 10
+                  complaints:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Complaint'
+
+    post:
+      summary: Create New Complaint
+      description: |
+        Create a new restaurant complaint. The severity will be automatically analyzed using AI if not provided.
+        Only `restaurant_name`, `customer_name`, and `description` are required fields.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComplaintInput'
+            examples:
+              basic_complaint:
+                summary: Basic complaint
+                value:
+                  restaurant_name: "Mario's Italian Kitchen"
+                  customer_name: "John Doe"
+                  description: "The pasta was cold and service was slow"
+              detailed_complaint:
+                summary: Detailed complaint with all fields
+                value:
+                  restaurant_name: "Ocean View Bistro"
+                  customer_name: "Sarah Johnson"
+                  customer_email: "sarah@email.com"
+                  customer_phone: "+1-555-0123"
+                  description: "Found a hair in my soup, completely unacceptable"
+                  booking_time: "2025-05-25T19:30:00"
+                  table_number: "12"
+                  party_size: 4
+                  meal_type: "dinner"
+                  order_total: 89.50
+                  payment_method: "card"
+                  server_name: "Maria"
+                  severity: 4
+      responses:
+        '200':
+          description: Complaint created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Complaint created successfully. Severity was automatically determined to be 4 based on the description."
+                  auto_analyzed:
+                    type: boolean
+                    example: true
+                  complaint:
+                    $ref: '#/components/schemas/Complaint'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/complaints/{complaint_id}:
+    get:
+      summary: Get Specific Complaint
+      description: Retrieve a specific complaint by its ID
+      parameters:
+        - name: complaint_id
+          in: path
+          required: true
+          description: UUID of the complaint
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: Complaint details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  complaint:
+                    $ref: '#/components/schemas/Complaint'
+        '404':
+          description: Complaint not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/analyze/severity:
+    post:
+      summary: Analyze Complaint Severity
+      description: |
+        Analyze the severity of a complaint description using AI-powered NLP.
+        Returns a severity rating from 1-5 where 1 is minor and 5 is severe.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: The complaint description to analyze
+                  example: "Found a hair in my food, this is disgusting"
+              required:
+                - description
+      responses:
+        '200':
+          description: Severity analysis result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  severity:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                    example: 4
+                  description:
+                    type: string
+                    example: "Found a hair in my food, this is disgusting"
+
+  /api/customer/{customer_email}/complaints:
+    get:
+      summary: Get Customer's Complaints
+      description: Retrieve all complaints for a specific customer by email address
+      parameters:
+        - name: customer_email
+          in: path
+          required: true
+          description: Customer's email address
+          schema:
+            type: string
+            format: email
+            example: "sarah.johnson@email.com"
+      responses:
+        '200':
+          description: Customer's complaints and summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  customer_email:
+                    type: string
+                    example: "sarah.johnson@email.com"
+                  complaints:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Complaint'
+                  summary:
+                    $ref: '#/components/schemas/CustomerSummary'
+
+  /api/customer/{customer_email}/complaints/{complaint_id}:
+    get:
+      summary: Get Customer's Specific Complaint
+      description: Retrieve a specific complaint for a customer
+      parameters:
+        - name: customer_email
+          in: path
+          required: true
+          description: Customer's email address
+          schema:
+            type: string
+            format: email
+        - name: complaint_id
+          in: path
+          required: true
+          description: UUID of the complaint
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Complaint details for the customer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  complaint:
+                    $ref: '#/components/schemas/Complaint'
+        '404':
+          description: Complaint not found for this customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/dashboard/customer/{customer_email}:
+    get:
+      summary: Customer Dashboard
+      description: |
+        Get comprehensive dashboard data for a customer including statistics,
+        recent complaints, and detailed analytics breakdown.
+      parameters:
+        - name: customer_email
+          in: path
+          required: true
+          description: Customer's email address
+          schema:
+            type: string
+            format: email
+            example: "sarah.johnson@email.com"
+      responses:
+        '200':
+          description: Customer dashboard data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  customer_email:
+                    type: string
+                    example: "sarah.johnson@email.com"
+                  dashboard:
+                    $ref: '#/components/schemas/CustomerDashboard'
+
+components:
+  schemas:
+    Complaint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the complaint
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        restaurant_name:
+          type: string
+          description: Name of the restaurant
+          example: "Mario's Italian Kitchen"
+        customer_name:
+          type: string
+          description: Name of the customer filing the complaint
+          example: "Sarah Johnson"
+        customer_email:
+          type: string
+          format: email
+          nullable: true
+          description: Customer's email address
+          example: "sarah.johnson@email.com"
+        customer_phone:
+          type: string
+          nullable: true
+          description: Customer's phone number
+          example: "+1-555-0123"
+        description:
+          type: string
+          description: Detailed description of the complaint
+          example: "Found a hair in my pasta dish. This is completely unacceptable."
+        severity:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Severity level (1=minor, 5=severe)
+          example: 4
+        complaint_date:
+          type: string
+          format: date-time
+          description: When the complaint was filed
+          example: "2025-05-25T07:28:44.164894"
+        booking_time:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time of the restaurant reservation/booking
+          example: "2025-05-24T18:00:00"
+        table_number:
+          type: string
+          nullable: true
+          description: Table number where customer was seated
+          example: "12"
+        party_size:
+          type: integer
+          nullable: true
+          description: Number of people in the party
+          example: 4
+        meal_type:
+          type: string
+          nullable: true
+          enum: [breakfast, lunch, dinner, brunch]
+          description: Type of meal
+          example: "dinner"
+        order_total:
+          type: number
+          format: float
+          nullable: true
+          description: Total amount of the order
+          example: 156.75
+        payment_method:
+          type: string
+          nullable: true
+          enum: [cash, card, mobile]
+          description: Payment method used
+          example: "card"
+        server_name:
+          type: string
+          nullable: true
+          description: Name of the server who attended the table
+          example: "Tony"
+        status:
+          type: string
+          description: Current status of the complaint
+          example: "Open"
+        resolution_notes:
+          type: string
+          nullable: true
+          description: Notes about how the complaint was resolved
+        resolved_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the complaint was resolved
+
+    ComplaintInput:
+      type: object
+      required:
+        - restaurant_name
+        - customer_name
+        - description
+      properties:
+        restaurant_name:
+          type: string
+          description: Name of the restaurant
+          example: "Mario's Italian Kitchen"
+        customer_name:
+          type: string
+          description: Name of the customer filing the complaint
+          example: "Sarah Johnson"
+        customer_email:
+          type: string
+          format: email
+          description: Customer's email address (optional)
+          example: "sarah.johnson@email.com"
+        customer_phone:
+          type: string
+          description: Customer's phone number (optional)
+          example: "+1-555-0123"
+        description:
+          type: string
+          description: Detailed description of the complaint
+          example: "Found a hair in my pasta dish. This is completely unacceptable."
+        severity:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Severity level (optional - will be auto-analyzed if not provided)
+          example: 4
+        booking_time:
+          type: string
+          format: date-time
+          description: Time of the restaurant reservation/booking (optional)
+          example: "2025-05-24T18:00:00"
+        table_number:
+          type: string
+          description: Table number where customer was seated (optional)
+          example: "12"
+        party_size:
+          type: integer
+          description: Number of people in the party (optional)
+          example: 4
+        meal_type:
+          type: string
+          enum: [breakfast, lunch, dinner, brunch]
+          description: Type of meal (optional)
+          example: "dinner"
+        order_total:
+          type: number
+          format: float
+          description: Total amount of the order (optional)
+          example: 156.75
+        payment_method:
+          type: string
+          enum: [cash, card, mobile]
+          description: Payment method used (optional)
+          example: "card"
+        server_name:
+          type: string
+          description: Name of the server who attended the table (optional)
+          example: "Tony"
+
+    CustomerSummary:
+      type: object
+      properties:
+        total_complaints:
+          type: integer
+          description: Total number of complaints by this customer
+          example: 2
+        average_severity:
+          type: number
+          format: float
+          description: Average severity of customer's complaints
+          example: 3.5
+        status_breakdown:
+          type: object
+          description: Breakdown of complaints by status
+          example:
+            "Open": 2
+            "Resolved": 0
+        total_spent:
+          type: number
+          format: float
+          description: Total amount spent by customer across all complaints
+          example: 249.15
+
+    CustomerDashboard:
+      type: object
+      properties:
+        total_complaints:
+          type: integer
+          description: Total number of complaints by this customer
+          example: 2
+        recent_complaints:
+          type: array
+          description: Most recent complaints (up to 5)
+          items:
+            $ref: '#/components/schemas/Complaint'
+        statistics:
+          type: object
+          properties:
+            average_severity:
+              type: number
+              format: float
+              description: Average severity of customer's complaints
+              example: 3.5
+            total_spent:
+              type: number
+              format: float
+              description: Total amount spent by customer
+              example: 249.15
+            restaurant_breakdown:
+              type: object
+              description: Statistics broken down by restaurant
+              example:
+                "Mario's Italian Kitchen":
+                  count: 1
+                  avg_severity: 4.0
+                  total_spent: 156.75
+            severity_breakdown:
+              type: object
+              description: Count of complaints by severity level
+              example:
+                "1": 0
+                "2": 0
+                "3": 1
+                "4": 1
+                "5": 0
+            meal_type_breakdown:
+              type: object
+              description: Count of complaints by meal type
+              example:
+                "dinner": 2
+                "lunch": 0
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        message:
+          type: string
+          description: Error message describing what went wrong
+          example: "Complaint not found"
+
+# Frontend Integration Examples
+examples:
+  javascript_fetch:
+    summary: "JavaScript Fetch API Example"
+    description: |
+      ```javascript
+      // Create a new complaint
+      const createComplaint = async (complaintData) => {
+        try {
+          const response = await fetch('http://localhost:5000/api/complaints', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(complaintData)
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error('Error creating complaint:', error);
+          throw error;
+        }
+      };
+
+      // Get customer dashboard
+      const getCustomerDashboard = async (email) => {
+        try {
+          const response = await fetch(`http://localhost:5000/api/dashboard/customer/${encodeURIComponent(email)}`);
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error('Error fetching dashboard:', error);
+          throw error;
+        }
+      };
+
+      // Usage examples
+      const complaintData = {
+        restaurant_name: "Mario's Italian Kitchen",
+        customer_name: "John Doe",
+        customer_email: "john@email.com",
+        description: "The service was slow and food was cold",
+        meal_type: "dinner",
+        order_total: 45.99
+      };
+
+      createComplaint(complaintData)
+        .then(result => console.log('Complaint created:', result))
+        .catch(error => console.error('Failed to create complaint:', error));
+      ```
+
+  react_example:
+    summary: "React Hook Example"
+    description: |
+      ```jsx
+      import { useState, useEffect } from 'react';
+
+      // Custom hook for managing complaints
+      const useComplaints = () => {
+        const [complaints, setComplaints] = useState([]);
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState(null);
+
+        const fetchComplaints = async () => {
+          setLoading(true);
+          try {
+            const response = await fetch('http://localhost:5000/api/complaints');
+            const data = await response.json();
+            setComplaints(data.complaints);
+            setError(null);
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        const createComplaint = async (complaintData) => {
+          setLoading(true);
+          try {
+            const response = await fetch('http://localhost:5000/api/complaints', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(complaintData)
+            });
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+              setComplaints(prev => [data.complaint, ...prev]);
+            }
+            return data;
+          } catch (err) {
+            setError(err.message);
+            throw err;
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        useEffect(() => {
+          fetchComplaints();
+        }, []);
+
+        return { complaints, loading, error, createComplaint, fetchComplaints };
+      };
+
+      // Component example
+      const ComplaintForm = () => {
+        const { createComplaint } = useComplaints();
+        const [formData, setFormData] = useState({
+          restaurant_name: '',
+          customer_name: '',
+          customer_email: '',
+          description: '',
+          meal_type: 'dinner'
+        });
+
+        const handleSubmit = async (e) => {
+          e.preventDefault();
+          try {
+            await createComplaint(formData);
+            alert('Complaint submitted successfully!');
+            setFormData({ restaurant_name: '', customer_name: '', customer_email: '', description: '', meal_type: 'dinner' });
+          } catch (error) {
+            alert('Failed to submit complaint');
+          }
+        };
+
+        return (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Restaurant Name"
+              value={formData.restaurant_name}
+              onChange={(e) => setFormData({...formData, restaurant_name: e.target.value})}
+              required
+            />
+            {/* Add more form fields as needed */}
+            <button type="submit">Submit Complaint</button>
+          </form>
+        );
+      };
+      ```
+
+  curl_examples:
+    summary: "cURL Command Examples"
+    description: |
+      ```bash
+      # Get all complaints
+      curl -X GET http://localhost:5000/api/complaints
+
+      # Create a new complaint
+      curl -X POST http://localhost:5000/api/complaints \
+        -H "Content-Type: application/json" \
+        -d '{
+          "restaurant_name": "Pizza Palace",
+          "customer_name": "Jane Smith", 
+          "customer_email": "jane@email.com",
+          "description": "Pizza was delivered cold and late",
+          "meal_type": "dinner",
+          "order_total": 25.99,
+          "payment_method": "card"
+        }'
+
+      # Get customer dashboard
+      curl -X GET "http://localhost:5000/api/dashboard/customer/jane@email.com"
+
+      # Analyze complaint severity
+      curl -X POST http://localhost:5000/api/analyze/severity \
+        -H "Content-Type: application/json" \
+        -d '{"description": "Found a bug in my salad, this is disgusting"}'
+      ```
