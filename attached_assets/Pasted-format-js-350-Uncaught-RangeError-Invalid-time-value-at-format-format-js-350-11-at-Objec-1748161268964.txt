@@ -1,0 +1,80 @@
+format.js:350  Uncaught RangeError: Invalid time value
+    at format (format.js:350:11)
+    at Object.valueFormatter (ComplaintsList.jsx:16:35)
+    at Object.getCellParamsForRow (useGridParamsApi.js:59:38)
+    at GridCell2 (GridCell.js:92:37)
+    at renderWithHooks (react-dom.development.js:16305:18)
+    at updateForwardRef (react-dom.development.js:19226:20)
+    at beginWork (react-dom.development.js:21636:16)
+    at HTMLUnknownElement.callCallback2 (react-dom.development.js:4164:14)
+    at Object.invokeGuardedCallbackDev (react-dom.development.js:4213:16)
+    at invokeGuardedCallback (react-dom.development.js:4277:31)
+5hook.js:608  The above error occurred in the <ForwardRef(GridCell2)> component:
+
+    at GridCell2 (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:9087:5)
+    at div
+    at GridRow2 (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:16257:5)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at GridVirtualScrollerRenderZone2 (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:8572:5)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at GridVirtualScrollerContent2 (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:8466:21)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:8402:5
+    at GridVirtualScroller (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:8884:18)
+    at div
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at GridRoot2 (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:10604:21)
+    at GridCSSVariablesContext (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:3763:18)
+    at GridPanelContextProvider (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:10525:3)
+    at GridContextProvider (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:16578:3)
+    at DataGrid (http://localhost:5173/node_modules/.vite/deps/@mui_x-data-grid.js?v=5292cca7:25392:17)
+    at div
+    at ComplaintsList (http://localhost:5173/src/components/ComplaintsList.jsx:20:42)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at Paper2 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:10000:17)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at Grid3 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:6956:19)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at Grid3 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:6956:19)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at Container3 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:6515:19)
+    at div
+    at http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:1665:45
+    at Box3 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:4677:19)
+    at DefaultPropsProvider (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:5326:3)
+    at RtlProvider (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:5302:3)
+    at ThemeProvider2 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:5258:5)
+    at ThemeProvider3 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:5409:5)
+    at ThemeProviderNoVars (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:9105:10)
+    at ThemeProvider4 (http://localhost:5173/node_modules/.vite/deps/chunk-SY3K244T.js?v=5292cca7:9119:3)
+    at App (http://localhost:5173/src/App.jsx:51:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+overrideMethod @ hook.js:608
+react-dom.development.js:12056  Uncaught RangeError: Invalid time value
+    at format (format.js:350:11)
+    at Object.valueFormatter (ComplaintsList.jsx:16:35)
+    at Object.getCellParamsForRow (useGridParamsApi.js:59:38)
+    at GridCell2 (GridCell.js:92:37)
+    at renderWithHooks (react-dom.development.js:16305:18)
+    at updateForwardRef (react-dom.development.js:19226:20)
+    at beginWork (react-dom.development.js:21636:16)
+    at beginWork$1 (react-dom.development.js:27426:14)
+    at performUnitOfWork (react-dom.development.js:26557:12)
+    at workLoopSync (react-dom.development.js:26466:5)
+hook.js:608  MUI X: useResizeContainer - The parent DOM element of the Data Grid has an empty height.
+Please make sure that this element has an intrinsic height.
+The grid displays with a height of 0px.
+
+More details: https://mui.com/r/x-data-grid-no-dimensions.
